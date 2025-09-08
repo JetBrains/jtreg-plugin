@@ -1,0 +1,4 @@
+JTREG_VERSION=7.5 0
+BUILD_DATE=October 09, 2024
+ADDITIONAL_FEATURES=ScreenshotsSaver(all), ScreenshotsTaker(all), TestRepeat(all), SaveScratch(all), WestonLauncher(linux)
+SOURCE=git:a21248ca329f+

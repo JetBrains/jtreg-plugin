@@ -1,0 +1,78 @@
+<idea-plugin>
+    <id>jtreg</id>
+    <name>JTReg Test Runner</name>
+    <vendor>JetBrains</vendor>
+    <description>Adds run/debug configurations to run JTReg JDK tests</description>
+
+    <depends>TestNG-J</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <applicationService serviceImplementation="com.jetbrains.plugin.jtreg.service.JTRegService"/>
+
+        <programRunner implementation="com.jetbrains.plugin.jtreg.configuration.JTRegDebuggerRunner"/>
+        <configurationType implementation="com.jetbrains.plugin.jtreg.configuration.JTRegConfigurationType"/>
+
+        <runConfigurationProducer implementation="com.jetbrains.plugin.jtreg.configuration.JTRegClassConfigurationProducer"/>
+        <runConfigurationProducer implementation="com.jetbrains.plugin.jtreg.configuration.JTRegDirectoryConfigurationProducer"/>
+
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.jetbrains.plugin.jtreg.analysis.TestLineMarkerProvider"/>
+
+        <applicationConfigurable
+                groupId="tools"
+                id="jtreg"
+                bundle="messages.JTRegBundle"
+                key="configurable.JTRegServiceConfigurable.display.name"
+                instance="com.jetbrains.plugin.jtreg.ui.JTRegServiceConfigurable"/>
+
+        <defaultLiveTemplates file="/liveTemplates/jtreg.xml"/>
+        <liveTemplateContext
+                contextId="JTReg"
+                implementation="com.jetbrains.plugin.jtreg.templates.JTRegTemplateContext"/>
+
+        <notificationGroup id="JTReg Plugin" displayType="STICKY_BALLOON"/>
+
+        <postStartupActivity implementation="com.jetbrains.plugin.jtreg.JTRegStartupActivity"/>
+    </extensions>
+
+    <projectListeners>
+        <listener class="com.jetbrains.plugin.jtreg.listeners.FileListener"
+                  topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"/>
+    </projectListeners>
+
+    <actions>
+        <action id="jtreg.ToolbarComboBoxAction"
+                class="com.jetbrains.plugin.jtreg.actions.ToolbarComboBoxAction"
+                text="JTReg"
+                description="Run JTReg tests"
+                icon="/icons/JavaCup16.png">
+                <add-to-group group-id="MainToolbarRight" anchor="before" relative-to-action="NewUiRunWidget" />
+        </action>
+
+        <action id="jtreg.RunSingleTest"
+                class="com.jetbrains.plugin.jtreg.analysis.RunSingleJtregTest"
+                text="Run Test"
+                description="Run test"
+                icon="AllIcons.RunConfigurations.TestState.Run">
+        </action>
+
+        <action id="jtreg.DebugSingleTest"
+                class="com.jetbrains.plugin.jtreg.analysis.DebugSingleJtregTest"
+                text="Debug Test"
+                description="Debug test"
+                icon="AllIcons.Actions.StartDebugger">
+        </action>
+
+        <action id="jtreg.ModifyTest"
+                class="com.jetbrains.plugin.jtreg.analysis.ModifyJtregTestConfig"
+                text="Modify Configuration"
+                description="Modify configuration">
+        </action>
+
+        <group id="jtreg.TestContextActions">
+            <reference ref="jtreg.RunSingleTest"/>
+            <reference ref="jtreg.DebugSingleTest"/>
+            <reference ref="jtreg.ModifyTest"/>
+        </group>
+    </actions>
+
+</idea-plugin>

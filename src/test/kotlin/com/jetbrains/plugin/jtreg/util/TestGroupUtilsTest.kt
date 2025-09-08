@@ -1,0 +1,117 @@
+package com.jetbrains.plugin.jtreg.util
+
+import org.junit.Assert
+import org.junit.Test
+
+class TestGroupUtilsTest {
+
+    @Test
+    fun testParseJBRFile() {
+        val content = TestGroupUtilsTest::class.java.getResource("TEST.groups")?.readText()
+        requireNotNull(content) { "File not found or is empty" }
+
+        val expected = listOf(
+            "all",
+            "jdk_all",
+            "tier1",
+            "tier1_part1",
+            "tier1_part2",
+            "tier1_part3",
+            "tier2",
+            "tier2_part1",
+            "tier2_part2",
+            "tier2_part3",
+            "tier3",
+            "tier4",
+            "build",
+            "jdk_lang",
+            "jdk_util",
+            "jdk_util_other",
+            "jdk_collections",
+            "jdk_concurrent",
+            "jdk_collections_core",
+            "jdk_stream",
+            "jdk_math",
+            "jdk_io",
+            "jdk_nio",
+            "jdk_net",
+            "jdk_time",
+            "jdk_rmi",
+            "jdk_security1",
+            "jdk_security2",
+            "jdk_security3",
+            "jdk_security4",
+            "jdk_security",
+            "jdk_security_infra",
+            "jdk_text",
+            "jdk_management",
+            "jdk_instrument",
+            "jdk_jmx",
+            "jdk_jdi",
+            "jdk_native_sanity",
+            "jdk_launcher",
+            "jdk_loom",
+            "core_tools",
+            "svc_tools",
+            "jdk_tools",
+            "jdk_jfr",
+            "jdk_jpackage",
+            "jdk_other",
+            "jdk_sctp",
+            "jdk_core",
+            "jdk_svc",
+            "jdk_foreign",
+            "jdk_vector",
+            "jdk_vector_sanity",
+            "jdk_awt",
+            "jdk_2d",
+            "jdk_beans",
+            "jdk_swing",
+            "jdk_sound",
+            "jdk_imageio",
+            "jdk_accessibility",
+            "jfc_demo",
+            "jdk_editpad",
+            "jbr_all",
+            "jdk_desktop",
+            "jdk_desktop_part1",
+            "jdk_desktop_part2",
+            "jdk_desktop_part3",
+            "jbr_all",
+            "jbr_desktop_part11",
+            "jbr_desktop_part12",
+            "jbr_desktop_part13",
+            "jbr_desktop_part14",
+            "jbr_desktop_part21",
+            "jbr_desktop_part22",
+            "jbr_desktop_part31",
+            "jbr_desktop_part32",
+            "jdk_client_sanity",
+            "jdk_swing_core",
+            "jdk_desktop_core",
+            "jdk_svc_sanity",
+            "jdk_jdi_sanity",
+            "jdk_jfr_sanity",
+            "jdk_stable",
+            "needs_g1gc",
+            "jdk_ipv6_only",
+            "jdk_nio_networkchannel",
+            "jdk_core_manual",
+            "jdk_core_manual_no_input",
+            "jdk_security_manual_no_input",
+            "jdk_core_manual_interactive",
+            "jdk_security_manual_interactive",
+            "jdk_containers_extended",
+            "jdk_core_no_security",
+            "jdk_since_checks",
+            "jdk_awt_wayland",
+            "jdk_swing_wayland",
+            "jdk_desktop_wayland"
+        )
+            .sorted()
+        val result = TestGroupUtils.parseTestGroupNames(content).sorted()
+
+        Assert.assertArrayEquals(expected.toTypedArray(), result.toTypedArray())
+    }
+
+}
