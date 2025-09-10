@@ -31,4 +31,4 @@ Enhance the development workflow with support for <a href="https://openjdk.org/j
   use [IntelliJ IDEA online help](https://www.jetbrains.com/idea/help/scala.html)
 
 ### Reporting issues
-If you found a bug, please report it on our [issue tracker](https://youtrack.jetbrains.com/issues/JBR#newissue)
+If you found a bug, please report it on our [issue tracker](https://youtrack.jetbrains.com/issues/JBR?q=Subsystem:tools.jtreg#newissue)
