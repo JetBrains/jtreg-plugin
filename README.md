@@ -25,10 +25,5 @@ Enhance the development workflow with support for <a href="https://openjdk.org/j
 
 <!-- Plugin description end -->
 
-## General information
-
-- To get information about how to install and use this plugin in IDEA, please
-  use [IntelliJ IDEA online help](https://www.jetbrains.com/idea/help/scala.html)
-
 ### Reporting issues
 If you found a bug, please report it on our [issue tracker](https://youtrack.jetbrains.com/issues/JBR?q=Subsystem:tools.jtreg#newissue)
