@@ -185,7 +185,7 @@ class ToolbarComboBoxAction: ComboBoxAction(), DumbAware {
         return object : ActionGroup("Choose From Test Groups", true) {
 
             override fun getChildren(e: AnActionEvent?): Array<AnAction> {
-                val groups = TestGroupUtils.getTestGroups().clone() as ArrayList<TestGroup>
+                val groups = TestGroupUtils.getTestGroups()
                 if (groups.isEmpty()) {
                     return arrayOf(
                         object : AnAction("No Test Groups Found") {
