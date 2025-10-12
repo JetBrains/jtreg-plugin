@@ -56,6 +56,88 @@ class JTRegConfigurationIntegrationTest : LightPlatformTestCase() {
         assertEquals("/bin/bash -lc run", cfg2.getRunCmd())
     }
 
+    fun testReadWriteFullConfiguration() {
+        val project = project
+        val cfg = JTRegConfiguration("My JTReg", project, factory)
+
+        cfg.setVMParameters("-Xmx512m")
+        cfg.setAlternativeJrePathEnabled(true)
+        cfg.setAlternativeJrePath("/jdk/fake")
+
+        cfg.setRunClass("com.jetbrains.example.TestClass")
+        cfg.setPackage("com.jetbrains.example")
+        cfg.setProgramParameters("-k:headful")
+
+        cfg.setWorkingDirectory("/tmp/work")
+        cfg.envs = mapOf("A" to "b")
+
+        cfg.setTestMode(TestMode.AGENT_VM)
+        cfg.setTestCategory("all")
+        cfg.setRepeatMode("N Times")
+        cfg.setRepeatCount(10)
+        cfg.setMaxRepeatCount(20)
+
+        cfg.setUseWeston(true)
+        cfg.setWestonScreens(2)
+        cfg.setWestonScreenWidth(1024)
+        cfg.setWestonScreenHeight(768)
+        cfg.setWakeFieldPath("/usr/lib/wakefield")
+
+        cfg.setExcludeList("jbProblemList.txt")
+
+        cfg.setTimeoutFactor(2.0f)
+
+        cfg.setConcurrency(2)
+        cfg.setLockFile("/tmp/lock")
+
+        cfg.setKeyword("headful")
+
+        cfg.setTestJavaOptions("-Dfoo=bar")
+        cfg.setTestKind(TestData.TEST_CLASS)
+
+        val element = Element("configuration")
+        cfg.writeExternal(element)
+
+        val cfg2 = JTRegConfiguration("", project, factory)
+        cfg2.readExternal(element)
+
+
+        assertEquals("-Xmx512m", cfg2.vmParameters)
+        assertEquals(true, cfg2.isAlternativeJrePathEnabled)
+        assertEquals("/jdk/fake", cfg2.alternativeJrePath)
+
+        assertEquals("com.jetbrains.example.TestClass", cfg2.runClass)
+        assertEquals("com.jetbrains.example", cfg2.`package`)
+        assertEquals("-k:headful", cfg2.programParameters)
+
+        assertEquals("/tmp/work", cfg2.workingDirectory)
+        assertEquals(mapOf("A" to "b"), cfg2.envs)
+
+        assertEquals(TestMode.AGENT_VM, cfg2.getTestMode())
+        assertEquals("all", cfg2.getTestCategory())
+        assertEquals("N Times", cfg2.getRepeatMode())
+        assertEquals(10, cfg2.getRepeatCount())
+        assertEquals(20, cfg2.getMaxRepeatCount())
+
+        assertEquals(true, cfg2.isUseWeston())
+        assertEquals(2, cfg2.getWestonScreens())
+        assertEquals(1024, cfg2.getWestonScreenWidth())
+        assertEquals(768, cfg2.getWestonScreenHeight())
+        assertEquals("/usr/lib/wakefield", cfg2.getWakeFieldPath())
+
+        assertEquals("jbProblemList.txt", cfg2.getExcludeList())
+
+        assertEquals(2.0f, cfg2.getTimeoutFactor())
+
+        assertEquals(2, cfg2.getConcurrency())
+        assertEquals("/tmp/lock", cfg2.getLockFile())
+
+        assertEquals("headful", cfg2.getKeyword())
+
+        assertEquals("-Dfoo=bar", cfg2.getTestJavaOptions())
+        assertEquals(TestData.TEST_CLASS, cfg2.testType)
+    }
+
     fun testReadExternalFallbackWhenTestKindMissing() {
         val project = project
         val cfg = JTRegConfiguration("", project, factory)
