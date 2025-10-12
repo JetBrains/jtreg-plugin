@@ -407,8 +407,10 @@ class JTRegConfiguration(name: String, project: Project, factory: ConfigurationF
     override fun writeExternal(element: Element) {
         super.writeExternal(element)
 
+        val jtreg = ConfigurationHelper.prepareTestData(data)
+
         element.setAttribute("configurationName", name)
-        element.setAttribute("testKind", data.testKind)
+        element.setAttribute("testKind", getTestKind())
         element.setAttribute("packageName", data.packageName)
         element.setAttribute("className", data.className)
 
@@ -431,51 +433,23 @@ class JTRegConfiguration(name: String, project: Project, factory: ConfigurationF
         }
 
         element.setAttribute("runCmd", runCmd)
-
-        val jtreg = ConfigurationHelper.prepareTestData(data)
-
         element.addContent(jtreg)
     }
 
     override fun readExternal(element: Element) {
         super.readExternal(element)
 
+        data = ConfigurationHelper.readTestData(element, settings)
+
         `package` = element.getAttributeValue("packageName") ?: ""
         runClass = element.getAttributeValue("className") ?: ""
+
         element.getChild("testGroup")?.let { testGroup ->
             val testRootDirectory = testGroup.getAttributeValue("testRootDirectory") ?: ""
             val relativeTestDirectory = testGroup.getAttributeValue("relativeTestDirectory") ?: ""
             val groupName = testGroup.getAttributeValue("groupName") ?: ""
             val testGroupObject = TestGroup(testRootDirectory, relativeTestDirectory, groupName)
             setTestGroup(testGroupObject)
-        }
-
-        element.getAttributeValue("testKind")?.let {
-            setTestKind(it)
-        } ?: run {
-            if (`package`.isNotEmpty()) {
-                setTestKind(TestData.TEST_DIRECTORY)
-            } else if (runClass.isNotEmpty()) {
-                setTestKind(TestData.TEST_CLASS)
-            } else {
-                setTestKind(TestData.TEST_GROUP)
-            }
-        }
-
-        element.getAttributeValue("configurationName")?.let {
-            name = it
-        } ?: run {
-            when (getTestKind()) {
-                TestData.TEST_DIRECTORY -> {
-                    name = `package`
-                }
-                TestData.TEST_GROUP -> {
-                    name = getTestGroup()?.groupName ?: ""
-                }
-                TestData.TEST_CLASS -> {
-                    name = runClass
-                }
-            }
         }
 
         val altJrePath = element.getAttributeValue("alternativeJrePath") ?: ""
@@ -499,7 +473,35 @@ class JTRegConfiguration(name: String, project: Project, factory: ConfigurationF
         programParameters = element.getAttributeValue("parameters") ?: ""
         vmParameters = element.getAttributeValue("vmParameters") ?: ""
 
-        data = ConfigurationHelper.readTestData(element, settings)
+        val testKind = element.getAttributeValue("testKind")
+        if (testKind != null && testKind.isNotEmpty()) {
+            setTestKind(testKind)
+        } else {
+            if (`package`.isNotEmpty()) {
+                setTestKind(TestData.TEST_DIRECTORY)
+            } else if (runClass.isNotEmpty()) {
+                setTestKind(TestData.TEST_CLASS)
+            } else {
+                setTestKind(TestData.TEST_GROUP)
+            }
+        }
+
+        val configurationName = element.getAttributeValue("configurationName")
+        if (configurationName != null && configurationName.isNotEmpty()) {
+            name = configurationName
+        } else {
+            when (getTestKind()) {
+                TestData.TEST_DIRECTORY -> {
+                    name = `package`
+                }
+                TestData.TEST_GROUP -> {
+                    name = getTestGroup()?.groupName ?: ""
+                }
+                TestData.TEST_CLASS -> {
+                    name = runClass
+                }
+            }
+        }
 
         element.getAttributeValue("runCmd")?.let { value ->
             setRunCmd(value)

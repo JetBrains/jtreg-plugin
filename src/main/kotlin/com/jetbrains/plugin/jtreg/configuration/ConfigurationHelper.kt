@@ -124,10 +124,11 @@ object ConfigurationHelper {
     }
 
     private fun getTestCategory(element: Element): String {
-        element.getAttributeValue("testCategory")?.let {
-            return it
-        } ?: run {
-            return TestData.ONLY_AUTOMATIC
+        val testCategory = element.getAttributeValue("testCategory")
+        return if (testCategory != null && testCategory.isNotEmpty()) {
+            testCategory
+        } else {
+            TestData.ONLY_AUTOMATIC
         }
     }
 
