@@ -29,7 +29,7 @@ jobs:
       - name: Upload all plugin artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: jtreg-plugin.zip
+          name: jtreg-plugin
           path: build/distributions/jtreg-plugin-*.zip
           if-no-files-found: error
           retention-days: 14
