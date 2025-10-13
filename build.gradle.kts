@@ -30,7 +30,7 @@ dependencies {
 
 
 intellij {
-    version.set(providers.gradleProperty("ideaVersion").orElse("2024.1.6"))
+    version.set(providers.gradleProperty("ideaVersion").orElse("2024.1.7"))
     type.set("IC")
 
     plugins.set(listOf("java", "TestNG-J"))
