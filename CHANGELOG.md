@@ -1,5 +1,12 @@
 # JTReg plugin
 
+## [1.1.0]
+### Added
+- Upgrade Intellij Platform Plugin to 2.9.0
+
+### Fixed
+- Fix persistence of run/debug configurations
+
 ## [1.0.0]
 ### Added
 - Run and Debug Configurations
