@@ -74,8 +74,7 @@ tasks {
     }
 
     patchPluginXml {
-        val v = properties("pluginVersion")
-        version = v
+        version = properties("pluginVersion").get()
         sinceBuild.set("241")
         untilBuild.set("261.0")
 
@@ -93,7 +92,7 @@ tasks {
 
         val changelog = project.changelog // local variable for configuration cache compatibility
         // Get the latest available change notes from the changelog file
-        changeNotes = v.map { pluginVersion ->
+        changeNotes = properties("pluginVersion").map { pluginVersion ->
             with(changelog) {
                 renderItem(
                     (getOrNull(pluginVersion) ?: getUnreleased())
