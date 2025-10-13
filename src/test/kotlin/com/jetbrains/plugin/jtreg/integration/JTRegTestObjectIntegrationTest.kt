@@ -3,7 +3,7 @@ package com.jetbrains.plugin.jtreg.integration
 import com.intellij.execution.configurations.JavaParameters
 import com.intellij.execution.executors.DefaultRunExecutor
 import com.intellij.execution.runners.ExecutionEnvironmentBuilder
-import com.intellij.testFramework.LightPlatformTestCase
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.plugin.jtreg.configuration.JTRegConfiguration
 import com.jetbrains.plugin.jtreg.configuration.JTRegConfigurationType
 import com.jetbrains.plugin.jtreg.configuration.JTRegTestObject
@@ -11,7 +11,7 @@ import com.jetbrains.plugin.jtreg.service.JTRegService
 import java.nio.file.Files
 import java.nio.file.Path
 
-class JTRegTestObjectIntegrationTest : LightPlatformTestCase() {
+class JTRegTestObjectIntegrationTest : BasePlatformTestCase() {
 
     private lateinit var tempHome: Path
 

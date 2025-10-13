@@ -2,7 +2,7 @@ package com.jetbrains.plugin.jtreg.integration
 
 import com.intellij.execution.RunManager
 import com.intellij.execution.configurations.ConfigurationFactory
-import com.intellij.testFramework.LightPlatformTestCase
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.plugin.jtreg.configuration.JTRegConfiguration
 import com.jetbrains.plugin.jtreg.configuration.JTRegConfigurationType
 import com.jetbrains.plugin.jtreg.configuration.IgnoreMode
@@ -10,7 +10,7 @@ import com.jetbrains.plugin.jtreg.configuration.TestMode
 import com.jetbrains.plugin.jtreg.configuration.model.TestData
 import org.jdom.Element
 
-class JTRegConfigurationIntegrationTest : LightPlatformTestCase() {
+class JTRegConfigurationIntegrationTest : BasePlatformTestCase() {
 
     private lateinit var factory: ConfigurationFactory
 

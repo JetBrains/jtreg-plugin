@@ -1,6 +1,8 @@
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+
 
 fun properties(key: String) = providers.gradleProperty(key)
 
@@ -8,8 +10,9 @@ plugins {
     id("java")
     kotlin("plugin.serialization") version "2.2.20"
     id("org.jetbrains.kotlin.jvm") version "2.2.20"
-    id("org.jetbrains.intellij") version "1.17.4"
+    id("org.jetbrains.intellij.platform") version "2.9.0"
     id("org.jetbrains.changelog") version "2.1.2"
+    id("java-test-fixtures")
 }
 
 group = "com.jetbrains"
@@ -19,21 +22,26 @@ val javaHarnessLib = "lib" + File.separator + "javatest.jar"
 
 repositories {
     mavenCentral()
+    intellijPlatform {
+        defaultRepositories()
+    }
 }
 
 dependencies {
     api(files(javaHarnessLib))
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.9.25")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:2.2.20")
     testImplementation("org.mockito:mockito-core:5.15.2")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
-}
 
+    intellijPlatform {
+        intellijIdeaCommunity(properties("ideaVersion").orElse("2024.1.6"))
 
-intellij {
-    version.set(providers.gradleProperty("ideaVersion").orElse("2024.1.7"))
-    type.set("IC")
+        bundledPlugin("com.intellij.java")
+        bundledPlugin("TestNG-J")
 
-    plugins.set(listOf("java", "TestNG-J"))
+        testFramework(TestFrameworkType.Platform)
+        testFramework(TestFrameworkType.JUnit5)
+    }
 }
 
 changelog {
@@ -66,7 +74,8 @@ tasks {
     }
 
     patchPluginXml {
-        version = properties("pluginVersion")
+        val v = properties("pluginVersion")
+        version = v
         sinceBuild.set("241")
         untilBuild.set("261.0")
 
@@ -84,7 +93,7 @@ tasks {
 
         val changelog = project.changelog // local variable for configuration cache compatibility
         // Get the latest available change notes from the changelog file
-        changeNotes = version.map { pluginVersion ->
+        changeNotes = v.map { pluginVersion ->
             with(changelog) {
                 renderItem(
                     (getOrNull(pluginVersion) ?: getUnreleased())
