@@ -1,3 +1,4 @@
+name: Build Plugin
 on:
   pull_request:
     branches: [ main ]
