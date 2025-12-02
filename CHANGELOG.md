@@ -1,5 +1,9 @@
 # JTReg plugin
 
+## [1.1.1]
+### Added
+- Set Intellij v261.x as supported version
+
 ## [1.1.0]
 ### Added
 - Upgrade Intellij Platform Plugin to 2.9.0
