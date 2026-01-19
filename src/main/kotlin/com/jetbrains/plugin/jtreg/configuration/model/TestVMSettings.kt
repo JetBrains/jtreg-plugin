@@ -57,9 +57,14 @@ data class TestVMSettings(
 
     override fun clone(): Any {
         try {
-            val settings = super.clone() as TestVMSettings
-            settings.envVars = envVars
-            settings.classPath = classPath
+            val settings = TestVMSettings(
+                allowSecurityManager = allowSecurityManager,
+                javaOptions = javaOptions,
+                nativeLibPath = nativeLibPath,
+                envVars = envVars,
+                classPath = classPath,
+                useIdeaVMOptions = useIdeaVMOptions
+            )
             return settings
         } catch (e: CloneNotSupportedException) {
             throw RuntimeException(e)

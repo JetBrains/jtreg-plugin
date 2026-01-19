@@ -156,7 +156,6 @@ object TestObjectHelper {
         if (configuration.getTestJavaOptions().trim().isNotEmpty()) {
             params.add("-javaoptions:${configuration.getTestJavaOptions()}")
         }
-        configuration.setTestJavaOptions("")
 
         if (configuration.getTestEnvVars().isNotEmpty()) {
             configuration.getTestEnvVars().map { "${it.key}=${it.value}" }.joinToString(",").let {
