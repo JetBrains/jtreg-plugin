@@ -34,7 +34,9 @@ dependencies {
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
 
     intellijPlatform {
-        intellijIdeaCommunity(properties("ideaVersion").orElse("2024.1.6"))
+        intellijIdea("2025.3")
+        //intellijPlatform()
+        //intellijIdeaCommunity(properties("ideaVersion").orElse("2025.3.1"))
 
         bundledPlugin("com.intellij.java")
         bundledPlugin("TestNG-J")
@@ -53,12 +55,12 @@ tasks {
 
     // Set the JVM compatibility versions
     withType<JavaCompile> {
-        sourceCompatibility = "17"
-        targetCompatibility = "17"
+        sourceCompatibility = "21"
+        targetCompatibility = "21"
     }
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17)  // or JvmTarget.JVM_21
+            jvmTarget.set(JvmTarget.JVM_21)  // or JvmTarget.JVM_21
         }
     }
 
