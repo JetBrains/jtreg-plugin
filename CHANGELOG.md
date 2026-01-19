@@ -1,5 +1,9 @@
 # JTReg plugin
 
+## [1.1.2]
+### Fixed
+- Fix the issue with resetting test java options after test run
+
 ## [1.1.1]
 ### Added
 - Set Intellij v261.x as supported version
