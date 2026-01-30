@@ -291,37 +291,6 @@ object JTRegLibUtils {
     }
 
     /**
-     * Create (if not existing) and get the jtreg project library.
-     */
-    fun createJTRegLibrary(project: Project, jtregDir: String): Library {
-        return updateJTRegLibrary(project, null, jtregDir)
-    }
-
-    /**
-     * Update the jtreg project library. The library would be created if it doesn't exist.
-     */
-    fun updateJTRegLibrary(project: Project, oldJTRegDir: String?, newJTRegDir: String?): Library {
-        val libraryTable = LibraryTablesRegistrar.getInstance().getLibraryTable(project)
-        val tableModel = libraryTable.modifiableModel
-        val library = tableModel.getLibraryByName("jtreg-libs") ?: tableModel.createLibrary("jtreg-libs")
-        val libraryModel = library.modifiableModel
-
-        val oldDir = "file://${oldJTRegDir}${File.separator}lib"
-        if (!oldJTRegDir.isNullOrBlank() && libraryModel.isJarDirectory(oldDir, OrderRootType.CLASSES)) {
-            libraryModel.removeRoot(oldDir, OrderRootType.CLASSES)
-        }
-        val newDir = "file://${newJTRegDir}${File.separator}lib"
-        if (!newJTRegDir.isNullOrBlank() && !libraryModel.isJarDirectory(newDir, OrderRootType.CLASSES)) {
-            libraryModel.addJarDirectory(newDir, true)
-        }
-        ApplicationManager.getApplication().runWriteAction {
-            libraryModel.commit()
-            tableModel.commit()
-        }
-        return library
-    }
-
-    /**
      * Does the given file contain a jtreg header?
      */
     private fun hasTestTag(element: PsiElement) = getTestHeader(element) != null

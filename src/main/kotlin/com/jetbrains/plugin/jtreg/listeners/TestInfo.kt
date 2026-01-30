@@ -23,15 +23,12 @@
  */
 package com.jetbrains.plugin.jtreg.listeners
 
-import com.intellij.openapi.roots.libraries.Library
 import com.intellij.openapi.vfs.VirtualFile
 
 data class TestInfo(val file: VirtualFile) {
     var roots: MutableList<VirtualFile> = mutableListOf()
-    var jtregLib: Library? = null
 
     fun dispose() {
         roots.clear()
-        jtregLib = null
     }
 }

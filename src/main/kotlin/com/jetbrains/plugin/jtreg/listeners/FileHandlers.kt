@@ -52,12 +52,7 @@ object FileHandlers {
                     if (isTestNg || isJUnit) {
                         val settings = ApplicationManager.getApplication().getService(JTRegService::class.java)
                         val libDir = settings.jtregHomeDirectory
-                        val library = JTRegLibUtils.createJTRegLibrary(project, libDir)
-                        testInfo.jtregLib = library
-                        rootModel.addLibrary(library)
-                    } else if (testInfo.jtregLib != null) {
-                        rootModel.removeLibrary(testInfo.jtregLib!!)
-                        testInfo.jtregLib = null
+                        rootModel.addLibrary(project, libDir)
                     }
                 }
             } else {
@@ -65,10 +60,6 @@ object FileHandlers {
                 rootModel?.use {
                     rootModel.removeSourceFolders(testInfo.roots)
                     testInfo.roots = mutableListOf()
-                    testInfo.jtregLib?.let {
-                        rootModel.removeLibrary(it)
-                        testInfo.jtregLib = null
-                    }
                 }
             }
         }
@@ -86,10 +77,6 @@ object FileHandlers {
                             return@runReadAction JTRegLibUtils.getTestRoots(project, file)
                         } else testInfo.roots
                         rootModel.removeSourceFolders(rootsToRemove)
-                        testInfo.jtregLib?.let {
-                            rootModel.removeLibrary(it)
-                            testInfo.jtregLib = null
-                        }
                     }
                 }
             }
