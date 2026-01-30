@@ -34,7 +34,7 @@ object Watchdog {
 
     fun processIncorrectJtregHome() {
         JTRegPlugin.instance.notificationGroup()
-            .createNotification("JTReg plugin", "JTReg home path is misconfigured. JTreg runtime libraries not found.", NotificationType.INFORMATION)
+             .createNotification("JTReg plugin", "JTReg home path is misconfigured. JTreg runtime libraries not found.", NotificationType.ERROR)
             .addAction(object : NotificationAction("Configure plugin") {
                 override fun actionPerformed(e: AnActionEvent, notification: Notification) {
                     ShowSettingsUtil.getInstance().showSettingsDialog(null, "JTReg Settings")
@@ -42,6 +42,17 @@ object Watchdog {
                 }
             })
             .notify(null)
+    }
+
+    fun processAbsentJtregHome() {
+        JTRegPlugin.instance.notificationGroup()
+            .createNotification("JTReg plugin", "Configure JTreg home path to add junit and testNG libraries to the project index.", NotificationType.INFORMATION)
+            .addAction(object : NotificationAction("Configure plugin") {
+                override fun actionPerformed(e: AnActionEvent, notification: Notification) {
+                    ShowSettingsUtil.getInstance().showSettingsDialog(null, "JTReg Settings")
+                    notification.expire()
+                }
+            })
     }
 
 }

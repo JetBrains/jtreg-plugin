@@ -27,6 +27,7 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.project.Project
 import com.jetbrains.plugin.jtreg.service.JTRegService
+import com.jetbrains.plugin.jtreg.ui.Watchdog
 import com.jetbrains.plugin.jtreg.util.JTRegLibUtils
 
 object FileHandlers {
@@ -52,7 +53,11 @@ object FileHandlers {
                     if (isTestNg || isJUnit) {
                         val settings = ApplicationManager.getApplication().getService(JTRegService::class.java)
                         val libDir = settings.jtregHomeDirectory
-                        rootModel.addLibrary(project, libDir)
+                        if (libDir.isBlank()) {
+                            Watchdog.processAbsentJtregHome()
+                        } else {
+                            rootModel.addLibrary(project, libDir)
+                        }
                     }
                 }
             } else {
