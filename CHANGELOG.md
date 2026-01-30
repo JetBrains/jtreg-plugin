@@ -1,5 +1,9 @@
 # JTReg plugin
 
+## [1.1.3]
+### Fixed
+- Use JTreg built-in libraries in project index for JUnit and TestNG tests
+
 ## [1.1.2]
 ### Fixed
 - Fix the issue with resetting test java options after test run
