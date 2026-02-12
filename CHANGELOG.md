@@ -1,5 +1,9 @@
 # JTReg plugin
 
+## [1.1.4]
+### Fixed
+- Fix escaping paths from Intellij project classpath
+
 ## [1.1.3]
 ### Fixed
 - Use JTreg built-in libraries in project index for JUnit and TestNG tests

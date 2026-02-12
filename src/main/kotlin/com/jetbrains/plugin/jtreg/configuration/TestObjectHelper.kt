@@ -164,6 +164,10 @@ object TestObjectHelper {
         }
 
         if (classPath.pathList.isNotEmpty()) {
+            println("CLASSPATH")
+            classPath.pathList.forEach {
+                println(it)
+            }
             params.add("-cpa:${buildClasspath(classPath.pathList)}")
         }
 
@@ -189,9 +193,32 @@ object TestObjectHelper {
         return params
     }
 
+    fun unescapeBackslashSpaces(input: String): String {
+        val out = StringBuilder(input.length)
+        var i = 0
+        while (i < input.length) {
+            val c = input[i]
+            if (c == '\\' && i + 1 < input.length && input[i + 1] == ' ') {
+                out.append(' ')
+                i += 2
+            } else {
+                out.append(c)
+                i += 1
+            }
+        }
+        return out.toString()
+    }
+
+    fun posixShellQuote(raw: String): String {
+        return "'" + raw.replace("'", "'\"'\"'") + "'"
+    }
+
+    fun escapePathForPosixShell(pathLike: String): String =
+        posixShellQuote(unescapeBackslashSpaces(pathLike))
+
     private fun buildClasspath(paths: List<String>): String {
         val pathSeparator = File.pathSeparator
-        return paths.joinToString(pathSeparator) { path -> path.replace("\"", "\\\"") }
+        return paths.map { escapePathForPosixShell(it) }.joinToString(pathSeparator) { path -> path.replace("\"", "\\\"") }
     }
 
 }
