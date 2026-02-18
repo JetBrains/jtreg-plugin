@@ -18,17 +18,27 @@ plugins {
 group = "com.jetbrains"
 version = properties("pluginVersion").get()
 
-val javaHarnessLib = "lib" + File.separator + "javatest.jar"
-
 repositories {
     mavenCentral()
+    ivy {
+        url = uri("https://github.com")
+        patternLayout {
+            artifact("/JetBrains/jtharness/releases/download/[revision]/[artifact].[ext]")
+        }
+        metadataSources {
+            artifact()
+        }
+        content {
+            includeGroup("com.sun.jtharness")
+        }
+    }
     intellijPlatform {
         defaultRepositories()
     }
 }
 
 dependencies {
-    api(files(javaHarnessLib))
+    api("com.sun.jtharness:javatest:${properties("jtHarnessVersion").get()}@jar")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:2.2.20")
     testImplementation("org.mockito:mockito-core:5.15.2")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
@@ -77,7 +87,7 @@ tasks {
 
     patchPluginXml {
         version = properties("pluginVersion").get()
-        sinceBuild.set("241")
+        sinceBuild.set("253.3")
         untilBuild.set("262.0")
 
         pluginDescription = providers.fileContents(layout.projectDirectory.file("README.md")).asText.map {
