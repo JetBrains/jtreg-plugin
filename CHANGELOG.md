@@ -1,5 +1,9 @@
 # JTReg plugin
 
+## [1.1.5]
+### Added
+- Set Intellij v262.x as supported version
+
 ## [1.1.4]
 ### Fixed
 - Fix escaping paths from Intellij project classpath
