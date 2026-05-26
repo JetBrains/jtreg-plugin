@@ -88,7 +88,7 @@ tasks {
     patchPluginXml {
         version = properties("pluginVersion").get()
         sinceBuild.set("253.3")
-        untilBuild.set("262.0")
+        untilBuild.set("263.0")
 
         pluginDescription = providers.fileContents(layout.projectDirectory.file("README.md")).asText.map {
             val start = "<!-- Plugin description -->"
