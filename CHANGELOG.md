@@ -1,5 +1,9 @@
 # JTReg plugin
 
+## [1.1.6]
+### Added
+- Set Intellij v263.x as supported version
+
 ## [1.1.5]
 ### Added
 - Set Intellij v262.x as supported version
