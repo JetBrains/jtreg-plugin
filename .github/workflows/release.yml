@@ -1,0 +1,109 @@
+name: Release Plugin
+on:
+  workflow_dispatch:
+
+# Required to push the tag and create the GitHub release.
+permissions:
+  contents: write
+
+# Never run two releases at the same time.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Jtreg Plugin Release
+    runs-on: ubuntu-latest
+    env:
+      JAVA_OPTS: -Xmx4096m -XX:ReservedCodeCacheSize=512m
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Read version from gradle.properties
+        id: version
+        run: |
+          VERSION=$(sed -n 's/^pluginVersion[[:space:]]*=[[:space:]]*//p' gradle.properties | tr -d '[:space:]')
+          if [ -z "$VERSION" ]; then
+            echo "::error file=gradle.properties::pluginVersion is not set in gradle.properties"
+            exit 1
+          fi
+          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error file=gradle.properties::pluginVersion '$VERSION' is not a valid version"
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Releasing version $VERSION as tag v$VERSION"
+
+      - name: Fail if version was already released
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          if git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null; then
+            echo "::error::Tag $TAG already exists. Version $VERSION has already been released; bump pluginVersion in gradle.properties."
+            exit 1
+          fi
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "::error::GitHub release $TAG already exists. Version $VERSION has already been released; bump pluginVersion in gradle.properties."
+            exit 1
+          fi
+          echo "Version $VERSION has not been released yet"
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: jetbrains
+          java-version: 21
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build plugin
+        run: ./gradlew buildPlugin --no-daemon
+
+      - name: Collect release notes from CHANGELOG.md
+        run: |
+          ./gradlew -q getChangelog --no-header --no-summary --no-daemon > build/release-notes.md
+          if ! grep -q '[^[:space:]]' build/release-notes.md; then
+            echo "::error file=CHANGELOG.md::No change notes found for version ${{ steps.version.outputs.version }}"
+            exit 1
+          fi
+          echo "Release notes:"
+          cat build/release-notes.md
+
+      - name: Locate plugin archive
+        id: artifact
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          ZIP=$(ls build/distributions/jtreg-plugin-"$VERSION".zip)
+          echo "zip=$ZIP" >> "$GITHUB_OUTPUT"
+          echo "Plugin archive: $ZIP"
+
+      # The tag push is the atomic guard: if someone released this version in the
+      # meantime, the push is rejected and nothing is published.
+      - name: Create and push tag
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$TAG" -m "Release $TAG"
+          git push origin "refs/tags/$TAG"
+
+      - name: Create GitHub release
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+          ZIP: ${{ steps.artifact.outputs.zip }}
+        run: |
+          gh release create "$TAG" "$ZIP" \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "$TAG" \
+            --notes-file build/release-notes.md \
+            --verify-tag
+          echo "Released $TAG: $(gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json url -q .url)"
