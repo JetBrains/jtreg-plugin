@@ -1,5 +1,6 @@
 [![official JetBrains project](http://jb.gg/badges/official.svg)](https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub)
 [![Jtreg Plugin Build & Test](https://github.com/JetBrains/jtreg-plugin/actions/workflows/build.yml/badge.svg)](https://github.com/JetBrains/jtreg-plugin/actions/workflows/build.yml)
+[![Latest release](https://img.shields.io/github/v/release/JetBrains/jtreg-plugin)](https://github.com/JetBrains/jtreg-plugin/releases)
 
 # Jtreg plugin for IntelliJ IDEA
 
